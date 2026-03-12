@@ -12,6 +12,15 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options => { options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")); });
 builder.Services.AddOpenApi();
 
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowAll", policy => {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 var jwtSection = builder.Configuration.GetSection(JwtOptions.SectionName);
 var jwt = jwtSection.Get<JwtOptions>() ?? throw new InvalidOperationException("Jwt settings missing from appsettings.json.");
 
@@ -45,6 +54,7 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "Fiscly API v1"); });
 }
 
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
