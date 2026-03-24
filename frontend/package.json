@@ -23,10 +23,13 @@
 		"vite": "^7.3.1"
 	},
 	"dependencies": {
-		"bits-ui": "^2.16.2",
+		"@tanstack/svelte-query": "^6.1.10",
+		"bits-ui": "^2.16.3",
 		"d3-array": "^3.2.4",
 		"d3-scale": "^4.0.2",
 		"layerchart": "^1.0.13",
-		"svelte-use-form": "^3.0.1"
+		"phosphor-svelte": "^3.1.0",
+		"svelte-use-form": "^3.0.1",
+		"svelte-ux": "^1.0.10"
 	}
 }
