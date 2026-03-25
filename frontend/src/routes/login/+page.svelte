@@ -37,6 +37,7 @@
       }
     } catch (error) {
       console.error("Login failed:", error);
+
       alert("Network error. Make sure the server is running.");
     }
   }
