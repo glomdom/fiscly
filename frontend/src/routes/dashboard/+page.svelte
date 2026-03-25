@@ -1,9 +1,11 @@
 <script lang="ts">
   import { MagnifyingGlassIcon, WalletIcon, ArrowUpRightIcon, ArrowDownRightIcon, PiggyBankIcon, TrendUpIcon } from "phosphor-svelte";
 
-  let searchTerm = $state("");
+  let { data } = $props();
 
-  let profile = $state({ firstName: "User" });
+  let profile = $derived(data.user)!;
+  
+  let searchTerm = $state("");
   let totalLiquidity = $state(12450.8);
 </script>
 
