@@ -4,9 +4,8 @@
   let { data } = $props();
 
   let profile = $derived(data.user)!;
-  
+
   let searchTerm = $state("");
-  let totalLiquidity = $state(12450.8);
 </script>
 
 <div class="min-h-screen bg-slate-950 text-gray-50 font-sans selection:bg-fuchsia-500/30">
@@ -24,58 +23,78 @@
         </div>
       </div>
 
-      <div class="md:text-right space-y-1">
+      <div class="md:text-right space-y-1 flex flex-col items-end">
         <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Total Liquidity</span>
-        <p class="text-4xl font-mono text-gray-50 font-light tracking-tight">
-          ${Math.floor(totalLiquidity).toLocaleString()}<span class="text-violet-400 text-2xl">.{(totalLiquidity % 1).toFixed(2).substring(2)}</span>
-        </p>
+
+        {#await data.streamed.summary}
+          <div class="h-10 w-40 bg-slate-800/50 rounded-lg animate-pulse mt-1"></div>
+        {:then summary}
+          <p class="text-4xl font-mono text-gray-50 font-light tracking-tight">
+            ${Math.floor(summary.metrics.totalLiquidity).toLocaleString()}<span class="text-violet-400 text-2xl"
+              >.{(summary.metrics.totalLiquidity % 1).toFixed(2).substring(2)}</span
+            >
+          </p>
+        {:catch}
+          <p class="text-red-400 text-xl font-mono mt-2">Error</p>
+        {/await}
       </div>
     </header>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div
-        class="bg-slate-900/60 rounded-3xl p-6 border border-white/5 shadow-sm flex flex-col justify-center relative overflow-hidden group hover:border-emerald-500/30 transition-colors"
-      >
-        <div class="absolute -right-4 -top-4 w-20 h-20 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-colors"></div>
-        <div class="flex items-center gap-2 mb-2">
-          <ArrowDownRightIcon class="text-emerald-400" size={20} />
-          <p class="text-sm font-medium text-slate-400">Monthly Income</p>
+      {#await data.streamed.summary}
+        <div class="col-span-1 sm:col-span-2 lg:col-span-4 bg-slate-900/40 rounded-3xl border border-white/5 shadow-sm h-32 flex flex-col items-center justify-center">
+          <div class="w-8 h-8 rounded-full border-2 border-fuchsia-500/30 border-t-fuchsia-500 animate-spin mb-3"></div>
+          <p class="text-sm text-slate-500 font-medium animate-pulse tracking-wide">Syncing secure data...</p>
         </div>
-        <p class="text-2xl font-mono text-gray-200">$4,250.00</p>
-      </div>
+      {:then summary}
+        <div
+          class="bg-slate-900/60 rounded-3xl p-6 border border-white/5 shadow-sm flex flex-col justify-center relative overflow-hidden group hover:border-emerald-500/30 transition-colors"
+        >
+          <div class="absolute -right-4 -top-4 w-20 h-20 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-colors"></div>
+          <div class="flex items-center gap-2 mb-2">
+            <ArrowDownRightIcon class="text-emerald-400" size={20} />
+            <p class="text-sm font-medium text-slate-400">Monthly Income</p>
+          </div>
+          <p class="text-2xl font-mono text-gray-200">${summary.metrics.monthlyIncome.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
+        </div>
 
-      <div
-        class="bg-slate-900/60 rounded-3xl p-6 border border-white/5 shadow-sm flex flex-col justify-center relative overflow-hidden group hover:border-red-500/30 transition-colors"
-      >
-        <div class="absolute -right-4 -top-4 w-20 h-20 bg-red-500/10 rounded-full blur-2xl group-hover:bg-red-500/20 transition-colors"></div>
-        <div class="flex items-center gap-2 mb-2">
-          <ArrowUpRightIcon class="text-red-400" size={20} />
-          <p class="text-sm font-medium text-slate-400">Monthly Expenses</p>
+        <div
+          class="bg-slate-900/60 rounded-3xl p-6 border border-white/5 shadow-sm flex flex-col justify-center relative overflow-hidden group hover:border-red-500/30 transition-colors"
+        >
+          <div class="absolute -right-4 -top-4 w-20 h-20 bg-red-500/10 rounded-full blur-2xl group-hover:bg-red-500/20 transition-colors"></div>
+          <div class="flex items-center gap-2 mb-2">
+            <ArrowUpRightIcon class="text-red-400" size={20} />
+            <p class="text-sm font-medium text-slate-400">Monthly Expenses</p>
+          </div>
+          <p class="text-2xl font-mono text-gray-200">${summary.metrics.monthlyExpenses.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
         </div>
-        <p class="text-2xl font-mono text-gray-200">$1,845.50</p>
-      </div>
 
-      <div
-        class="bg-slate-900/60 rounded-3xl p-6 border border-white/5 shadow-sm flex flex-col justify-center relative overflow-hidden group hover:border-indigo-500/30 transition-colors"
-      >
-        <div class="absolute -right-4 -top-4 w-20 h-20 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition-colors"></div>
-        <div class="flex items-center gap-2 mb-2">
-          <PiggyBankIcon class="text-indigo-400" size={20} />
-          <p class="text-sm font-medium text-slate-400">Total Savings</p>
+        <div
+          class="bg-slate-900/60 rounded-3xl p-6 border border-white/5 shadow-sm flex flex-col justify-center relative overflow-hidden group hover:border-indigo-500/30 transition-colors"
+        >
+          <div class="absolute -right-4 -top-4 w-20 h-20 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition-colors"></div>
+          <div class="flex items-center gap-2 mb-2">
+            <PiggyBankIcon class="text-indigo-400" size={20} />
+            <p class="text-sm font-medium text-slate-400">Total Savings</p>
+          </div>
+          <p class="text-2xl font-mono text-gray-200">${summary.metrics.totalSavings.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
         </div>
-        <p class="text-2xl font-mono text-gray-200">$8,400.00</p>
-      </div>
 
-      <div
-        class="bg-slate-900/60 rounded-3xl p-6 border border-white/5 shadow-sm flex flex-col justify-center relative overflow-hidden group hover:border-fuchsia-500/30 transition-colors"
-      >
-        <div class="absolute -right-4 -top-4 w-20 h-20 bg-fuchsia-500/10 rounded-full blur-2xl group-hover:bg-fuchsia-500/20 transition-colors"></div>
-        <div class="flex items-center gap-2 mb-2">
-          <TrendUpIcon class="text-fuchsia-400" size={20} />
-          <p class="text-sm font-medium text-slate-400">Investments</p>
+        <div
+          class="bg-slate-900/60 rounded-3xl p-6 border border-white/5 shadow-sm flex flex-col justify-center relative overflow-hidden group hover:border-fuchsia-500/30 transition-colors"
+        >
+          <div class="absolute -right-4 -top-4 w-20 h-20 bg-fuchsia-500/10 rounded-full blur-2xl group-hover:bg-fuchsia-500/20 transition-colors"></div>
+          <div class="flex items-center gap-2 mb-2">
+            <TrendUpIcon class="text-fuchsia-400" size={20} />
+            <p class="text-sm font-medium text-slate-400">Investments</p>
+          </div>
+          <p class="text-2xl font-mono text-gray-200">${summary.metrics.investments.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
         </div>
-        <p class="text-2xl font-mono text-gray-200">$12,050.30</p>
-      </div>
+      {:catch error}
+        <div class="col-span-1 sm:col-span-2 lg:col-span-4 bg-red-950/30 rounded-3xl p-6 border border-red-500/30 text-center">
+          <p class="text-red-400 font-medium">Unable to load metrics. Please refresh the page.</p>
+        </div>
+      {/await}
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
