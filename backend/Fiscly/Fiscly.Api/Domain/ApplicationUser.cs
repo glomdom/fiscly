@@ -11,7 +11,4 @@ public sealed class ApplicationUser {
     public string PasswordHash { get; set; } = null!;
 
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
-
-    // public ICollection<EquipmentRequest> Requests { get; set; } = new List<EquipmentRequest>();
-    // public ICollection<EquipmentRequest> ApprovedRequests { get; set; } = new List<EquipmentRequest>();
 }
