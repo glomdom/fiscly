@@ -8,7 +8,7 @@ export const handle = async ({ event, resolve }) => {
       throw redirect(303, "/login");
     }
 
-    const res = await fetch("http://localhost:5096/api/auth/me", {
+    const res = await event.fetch("http://localhost:5096/api/auth/me", {
       headers: { Authorization: `Bearer ${token}` },
     });
 

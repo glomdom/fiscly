@@ -1,7 +1,7 @@
 import { fail, redirect, isRedirect } from "@sveltejs/kit";
 
 export const actions = {
-  default: async ({ request }) => {
+  default: async ({ request, fetch }) => {
     const formData = await request.formData();
 
     const firstName = formData.get("firstName");

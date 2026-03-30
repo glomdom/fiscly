@@ -4,7 +4,6 @@
   let { data } = $props();
 
   let profile = $derived(data.user)!;
-
   let searchTerm = $state("");
 </script>
 
@@ -12,11 +11,6 @@
   <main class="max-w-7xl mx-auto px-6 lg:px-12 py-12 space-y-10">
     <header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pb-6 border-b border-white/10">
       <div class="flex items-center gap-5">
-        <div
-          class="w-14 h-14 bg-linear-to-br from-indigo-500 to-fuchsia-500 rounded-2xl flex items-center justify-center text-3xl font-bold text-white shadow-lg shadow-indigo-500/20"
-        >
-          F
-        </div>
         <div>
           <h1 class="text-4xl font-bold tracking-tight">Dashboard</h1>
           <p class="text-violet-300 opacity-75 mt-1 text-lg">Welcome back, {profile.firstName}.</p>
@@ -27,7 +21,10 @@
         <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Total Liquidity</span>
 
         {#await data.streamed.summary}
-          <div class="h-10 w-40 bg-slate-800/50 rounded-lg animate-pulse mt-1"></div>
+          <div class="flex items-center justify-end gap-3 mt-1 h-10 w-full">
+            <div class="w-5 h-5 rounded-full border-2 border-fuchsia-500/30 border-t-fuchsia-500 animate-spin"></div>
+            <div class="h-9 w-36 bg-slate-800/50 rounded-lg animate-pulse"></div>
+          </div>
         {:then summary}
           <p class="text-4xl font-mono text-gray-50 font-light tracking-tight">
             ${Math.floor(summary.metrics.totalLiquidity).toLocaleString()}<span class="text-violet-400 text-2xl"
@@ -42,10 +39,15 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {#await data.streamed.summary}
-        <div class="col-span-1 sm:col-span-2 lg:col-span-4 bg-slate-900/40 rounded-3xl border border-white/5 shadow-sm h-32 flex flex-col items-center justify-center">
-          <div class="w-8 h-8 rounded-full border-2 border-fuchsia-500/30 border-t-fuchsia-500 animate-spin mb-3"></div>
-          <p class="text-sm text-slate-500 font-medium animate-pulse tracking-wide">Syncing secure data...</p>
-        </div>
+        {#each Array(4) as _}
+          <div class="bg-slate-900/40 rounded-3xl p-6 border border-white/5 shadow-sm flex flex-col justify-center">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-4 h-4 rounded-full border-2 border-slate-600/30 border-t-slate-400 animate-spin"></div>
+              <div class="h-4 w-24 bg-slate-800/80 rounded animate-pulse"></div>
+            </div>
+            <div class="h-8 w-32 bg-slate-800/80 rounded animate-pulse mt-0.5"></div>
+          </div>
+        {/each}
       {:then summary}
         <div
           class="bg-slate-900/60 rounded-3xl p-6 border border-white/5 shadow-sm flex flex-col justify-center relative overflow-hidden group hover:border-emerald-500/30 transition-colors"
