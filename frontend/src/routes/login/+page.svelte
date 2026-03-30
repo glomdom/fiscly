@@ -18,14 +18,8 @@
   {#if ready}
     <div class="w-full max-w-5xl flex flex-col md:flex-row items-center justify-between gap-12 lg:gap-24">
       <div class="text-center md:text-left flex-1" in:fade={{ duration: 800 }}>
-        <div
-          class="w-16 h-16 bg-linear-to-br from-indigo-500 to-fuchsia-500 rounded-2xl mb-8 mx-auto md:mx-0 flex items-center justify-center text-3xl font-bold text-white shadow-lg shadow-indigo-500/20"
-        >
-          F
-        </div>
-
-        <h1 class="text-5xl lg:text-6xl font-bold text-gray-50 tracking-tight mb-4 leading-tight">Welcome back to Fiscly.</h1>
-        <p class="text-violet-300 opacity-75 text-lg"></p>
+        <h1 class="text-5xl lg:text-6xl font-bold text-gray-50 tracking-tight mb-4 leading-tight">Welcome back.</h1>
+        <p class="text-violet-300 opacity-75 text-lg">Log in to view your finances.</p>
       </div>
 
       <div class="w-full max-w-md bg-slate-900/50 p-8 rounded-3xl border border-violet-900/30 shadow-2xl backdrop-blur-sm" in:fly={{ y: 40, duration: 800, delay: 150 }}>
@@ -86,8 +80,10 @@
         </form>
 
         <div class="mt-8 text-center">
-          <a href="/register" class="text-sm text-slate-400 hover:text-fuchsia-400 transition-colors">
-            Don't have an account? <span class="font-semibold underline underline-offset-4">Register here</span>
+          <span class="text-sm text-slate-400">Don't have an account?</span>
+
+          <a href="/register" class="text-sm font-semibold underline underline-offset-4 text-slate-400 hover:text-fuchsia-400 transition-colors">
+            Register here
           </a>
         </div>
       </div>

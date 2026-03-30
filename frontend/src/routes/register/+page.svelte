@@ -18,11 +18,6 @@
   {#if ready}
     <div class="w-full max-w-5xl flex flex-col md:flex-row items-center justify-between gap-12 lg:gap-24">
       <div class="text-center md:text-left flex-1" in:fade={{ duration: 800 }}>
-        <div
-          class="w-16 h-16 bg-linear-to-br from-indigo-500 to-fuchsia-500 rounded-2xl mb-8 mx-auto md:mx-0 flex items-center justify-center text-3xl font-bold text-white shadow-lg shadow-indigo-500/20"
-        >
-          F
-        </div>
         <h1 class="text-5xl lg:text-6xl font-bold text-gray-50 tracking-tight mb-4 leading-tight">Create an account, for free.</h1>
         <p class="text-violet-300 opacity-75 text-lg">Take control of your financial future today.</p>
       </div>
@@ -89,7 +84,7 @@
               id="password"
               use:validators={[required]}
               class="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-3 text-gray-50 focus:ring-2 focus:ring-fuchsia-500 focus:border-transparent transition-all outline-none placeholder:text-slate-600"
-              placeholder="••••••••"
+              placeholder=""
             />
             <div class="text-red-400 text-xs mt-1 font-medium px-1">
               <Hint for="password" on="required">Password is required</Hint>
@@ -117,8 +112,10 @@
         </form>
 
         <div class="mt-6 text-center">
-          <a href="/login" class="text-sm text-slate-400 hover:text-fuchsia-400 transition-colors">
-            Already have an account? <span class="font-semibold underline underline-offset-4">Sign in</span>
+          <span class="text-sm text-slate-400">Already have an account?</span>
+
+          <a href="/login" class="text-sm font-semibold underline underline-offset-4 text-slate-400 hover:text-fuchsia-400 transition-colors">
+            Login here
           </a>
         </div>
       </div>

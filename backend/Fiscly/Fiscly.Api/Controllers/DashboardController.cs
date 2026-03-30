@@ -28,7 +28,6 @@ public class DashboardController : ControllerBase {
             });
         }
 
-
         // perf hacks
         var now = DateTime.UtcNow;
         var startOfMonth = new DateTime(now.Year, now.Month, 1).ToUniversalTime();
