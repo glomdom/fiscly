@@ -33,10 +33,18 @@
             <div class="h-9 w-36 bg-slate-800/50 rounded-lg animate-pulse"></div>
           </div>
         {:then summary}
-          <p class="text-4xl font-mono text-gray-50 font-light tracking-tight leading-none h-10 flex items-center">
-            ${Math.floor(summary.metrics.totalLiquidity).toLocaleString()}<span class="text-violet-400 text-2xl"
-              >.{(summary.metrics.totalLiquidity % 1).toFixed(2).substring(2)}</span
-            >
+          {@const val = summary.metrics.totalLiquidity}
+          {@const isNegative = val < 0}
+          {@const absVal = Math.abs(val)}
+
+          <p class="text-4xl font-mono font-light tracking-tight leading-none h-10 flex items-baseline transition-colors {isNegative ? 'text-red-400' : 'text-gray-50'}">
+            <span>{isNegative ? "-$" : "$"}</span>
+
+            {Math.trunc(absVal).toLocaleString()}
+
+            <span class="{isNegative ? 'text-red-500/80' : 'text-violet-400'} text-2xl">
+              .{(absVal % 1).toFixed(2).split(".")[1]}
+            </span>
           </p>
         {:catch}
           <p class="text-red-400 text-xl font-mono mt-2 h-10 flex items-center">Error</p>

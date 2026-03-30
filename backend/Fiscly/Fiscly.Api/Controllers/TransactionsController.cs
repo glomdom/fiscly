@@ -28,11 +28,12 @@ public class TransactionsController : ControllerBase {
             });
         }
 
-        var transactions = _db.Transactions
+        var transactions = await _db.Transactions
             .AsNoTracking()
             .Where(x => x.UserId == user.Id)
+            .OrderByDescending(x => x.Date)
             .Select(x => new TransactionDto(x.Merchant, x.Category, x.Amount, x.Date))
-            .ToList();
+            .ToListAsync();
 
         return Ok(
             new TransactionsResponseDto(transactions)
