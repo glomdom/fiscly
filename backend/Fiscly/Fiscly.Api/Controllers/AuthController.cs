@@ -96,20 +96,21 @@ public class AuthController : ControllerBase {
 
     [HttpGet("me")]
     [Authorize]
-    public ActionResult<CurrentUserResponse> Me() {
+    public async Task<ActionResult<CurrentUserResponse>> Me() {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        var email = User.FindFirst(ClaimTypes.Email)!.Value;
-        var fullName = User.FindFirst(ClaimTypes.Name)?.Value ?? "";
-
-        var parts = fullName.Split(' ', 2, StringSplitOptions.TrimEntries);
-        var firstName = parts.Length > 0 ? parts[0] : "";
-        var lastName = parts.Length > 1 ? parts[1] : "";
+        var user = await _db.Users.FirstOrDefaultAsync(x => x.Id == userId);
+        if (user is null) {
+            return BadRequest(new ProblemDetails {
+                Detail = "User was not found.",
+                Status = StatusCodes.Status400BadRequest,
+            });
+        }
 
         return Ok(new CurrentUserResponse(
-            userId,
-            firstName,
-            lastName,
-            email
+            user.Id,
+            user.FirstName,
+            user.LastName,
+            user.Email
         ));
     }
 }
