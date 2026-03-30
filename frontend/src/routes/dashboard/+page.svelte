@@ -4,7 +4,7 @@
   import PiggyBankIcon from "phosphor-svelte/lib/PiggyBankIcon";
   import TrendUpIcon from "phosphor-svelte/lib/TrendUpIcon";
   import MetricCard from "$lib/components/MetricCard.svelte";
-  import UpcomingBills from "$lib/components/UpcomingBills.svelte";
+  // import UpcomingBills from "$lib/components/UpcomingBills.svelte";
   import RecentTransactions from "$lib/components/RecentTransactions.svelte";
   import MetricCardSkeleton from "$lib/components/MetricCardSkeleton.svelte";
   import RecentTransactionsSkeleton from "$lib/components/RecentTransactionsSkeleton.svelte";
@@ -29,7 +29,7 @@
 
         {#await data.streamed.summary}
           <div class="flex items-center justify-end gap-3 h-10 w-full">
-            <div class="w-5 h-5 rounded-full border-2 border-fuchsia-500/30 border-t-fuchsia-500 animate-spin"></div>
+            <div class="w-5 h-5 rounded-full border-3 border-slate-800 border-t-slate-500 animate-spin"></div>
             <div class="h-9 w-36 bg-slate-800/50 rounded-lg animate-pulse"></div>
           </div>
         {:then summary}
@@ -110,7 +110,7 @@
         {#await data.streamed.transactions}
           <RecentTransactionsSkeleton />
         {:then transactions}
-          <RecentTransactions transactions={transactions} />
+          <RecentTransactions {transactions} />
         {:catch}
           <div class="bg-red-950/30 rounded-3xl p-6 border border-red-500/30 text-center mt-4">
             <p class="text-red-400">Failed to load transactions.</p>
