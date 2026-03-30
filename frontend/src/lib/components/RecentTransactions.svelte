@@ -14,7 +14,7 @@
 
   const categoryStyles: Record<string, string> = {
     Investment: "bg-teal-500/10 text-teal-400 border-teal-500/20",
-    Savings: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+    Saving: "bg-purple-500/10 text-purple-400 border-purple-500/20",
     Shopping: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
     Food: "bg-orange-500/10 text-orange-400 border-orange-500/20",
     Housing: "bg-blue-500/10 text-blue-400 border-blue-500/20",
