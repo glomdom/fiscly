@@ -8,6 +8,8 @@
   import RecentTransactions from "$lib/components/RecentTransactions.svelte";
   import MetricCardSkeleton from "$lib/components/MetricCardSkeleton.svelte";
   import RecentTransactionsSkeleton from "$lib/components/RecentTransactionsSkeleton.svelte";
+  import SpendingBreakdown from "$lib/components/SpendingBreakdown.svelte";
+  import SpendingBreakdownSkeleton from "$lib/components/SpendingBreakdownSkeleton.svelte";
 
   let { data } = $props();
 
@@ -66,7 +68,17 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div class="lg:col-span-3 bg-slate-900/60 rounded-3xl p-8 border border-white/5 shadow-sm flex flex-col min-h-85">
+      {#await data.streamed.breakdown}
+        <SpendingBreakdownSkeleton />
+      {:then breakdown}
+        <SpendingBreakdown />
+      {:catch}
+        <div class="bg-red-950/30 rounded-3xl p-6 border border-red-500/30 text-center mt-4">
+          <p class="text-red-400">Failed to load transactions.</p>
+        </div>
+      {/await}
+
+      <!-- <div class="lg:col-span-3 bg-slate-900/60 rounded-3xl p-8 border border-white/5 shadow-sm flex flex-col min-h-85">
         <h3 class="text-sm font-semibold mb-8 text-slate-400 uppercase tracking-wider">Spending Breakdown</h3>
 
         <div class="space-y-6 grow flex flex-col justify-center">
@@ -110,7 +122,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- <UpcomingBills /> -->
 

@@ -39,4 +39,28 @@ public class TransactionsController : ControllerBase {
             new TransactionsResponseDto(transactions)
         );
     }
+
+    [HttpGet("breakdown")]
+    [Authorize]
+    public async Task<ActionResult<FinancialReportDto>> Breakdown() {
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var user = await _db.Users.FirstOrDefaultAsync(x => x.Id == userId);
+        if (user is null) {
+            return BadRequest(new ProblemDetails {
+                Detail = "User was not found.",
+                Status = StatusCodes.Status400BadRequest,
+            });
+        }
+
+        var transactions = await _db.Transactions
+            .AsNoTracking()
+            .Where(x => x.UserId == user.Id)
+            .OrderByDescending(x => x.Date)
+            .Select(x => new TransactionDto(x.Merchant, x.Category, x.Amount, x.Date))
+            .ToListAsync();
+
+        return Ok(
+            new TransactionsResponseDto(transactions)
+        );
+    }
 }
