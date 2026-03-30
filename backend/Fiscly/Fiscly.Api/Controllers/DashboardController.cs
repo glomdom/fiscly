@@ -51,7 +51,7 @@ public class DashboardController : ControllerBase {
         var totalLiquidity = stats?.TotalLiquidity ?? 0;
         var monthlyIncome = stats?.Income ?? 0;
         var monthlyExpenses = Math.Abs(stats?.Expenses ?? 0);
-        var totalSavings = stats?.TotalSaving ?? 0;
+        var totalSavings = Math.Abs(stats?.TotalSaving ?? 0);
         var totalInvestments = Math.Abs(stats?.TotalInvestments ?? 0);
 
         return Ok(new FinancialMetricsResponseDto(new FinancialMetricsDto(totalLiquidity, monthlyIncome, monthlyExpenses, totalSavings, totalInvestments)));
