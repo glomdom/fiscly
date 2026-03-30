@@ -1,10 +1,11 @@
 <script lang="ts">
+  import { Tween } from "svelte/motion";
+  import { cubicOut } from "svelte/easing";
   import ArrowUpRightIcon from "phosphor-svelte/lib/ArrowUpRightIcon";
   import ArrowDownRightIcon from "phosphor-svelte/lib/ArrowDownRightIcon";
   import PiggyBankIcon from "phosphor-svelte/lib/PiggyBankIcon";
   import TrendUpIcon from "phosphor-svelte/lib/TrendUpIcon";
   import MetricCard from "$lib/components/MetricCard.svelte";
-  // import UpcomingBills from "$lib/components/UpcomingBills.svelte";
   import RecentTransactions from "$lib/components/RecentTransactions.svelte";
   import MetricCardSkeleton from "$lib/components/MetricCardSkeleton.svelte";
   import RecentTransactionsSkeleton from "$lib/components/RecentTransactionsSkeleton.svelte";
@@ -14,6 +15,16 @@
   let { data } = $props();
 
   let profile = $derived(data.user)!;
+
+  const liquidityTween = new Tween(0, { duration: 1500, easing: cubicOut });
+
+  $effect(() => {
+    data.streamed.summary
+      .then((summary: any) => {
+        liquidityTween.target = summary.metrics.totalLiquidity;
+      })
+      .catch(() => {});
+  });
 </script>
 
 <div class="min-h-screen bg-slate-950 text-gray-50 font-sans selection:bg-fuchsia-500/30">
@@ -35,14 +46,14 @@
             <div class="h-9 w-36 bg-slate-800/50 rounded-lg animate-pulse"></div>
           </div>
         {:then summary}
-          {@const val = summary.metrics.totalLiquidity}
+          {@const val = liquidityTween.current}
           {@const isNegative = val < 0}
           {@const absVal = Math.abs(val)}
 
           <p class="text-4xl font-mono font-light tracking-tight leading-none h-10 flex items-baseline transition-colors {isNegative ? 'text-red-400' : 'text-gray-50'}">
             <span>{isNegative ? "-$" : "$"}</span>
 
-            {Math.trunc(absVal).toLocaleString()}
+            {Math.trunc(absVal).toLocaleString("en-US")}
 
             <span class="{isNegative ? 'text-red-500/80' : 'text-violet-400'} text-2xl">
               .{(absVal % 1).toFixed(2).split(".")[1]}
@@ -71,60 +82,12 @@
       {#await data.streamed.breakdown}
         <SpendingBreakdownSkeleton />
       {:then breakdown}
-        <SpendingBreakdown monthlyBreakdowns={breakdown}/>
+        <SpendingBreakdown monthlyBreakdowns={breakdown} />
       {:catch}
         <div class="bg-red-950/30 rounded-3xl p-6 border border-red-500/30 text-center mt-4">
-          <p class="text-red-400">Failed to load transactions.</p>
+          <p class="text-red-400">Failed to load breakdown.</p>
         </div>
       {/await}
-
-      <!-- <div class="lg:col-span-3 bg-slate-900/60 rounded-3xl p-8 border border-white/5 shadow-sm flex flex-col min-h-85">
-        <h3 class="text-sm font-semibold mb-8 text-slate-400 uppercase tracking-wider">Spending Breakdown</h3>
-
-        <div class="space-y-6 grow flex flex-col justify-center">
-          <div>
-            <div class="flex justify-between text-sm mb-2.5">
-              <span class="font-medium text-gray-200">Housing & Utilities</span>
-              <span class="font-mono text-slate-400">$1,250.00</span>
-            </div>
-            <div class="w-full bg-slate-950/50 rounded-full h-3 border border-white/5 overflow-hidden">
-              <div class="bg-linear-to-r from-indigo-500 to-indigo-400 h-full rounded-full" style="width: 65%"></div>
-            </div>
-          </div>
-
-          <div>
-            <div class="flex justify-between text-sm mb-2.5">
-              <span class="font-medium text-gray-200">Food & Dining</span>
-              <span class="font-mono text-slate-400">$420.50</span>
-            </div>
-            <div class="w-full bg-slate-950/50 rounded-full h-3 border border-white/5 overflow-hidden">
-              <div class="bg-linear-to-r from-fuchsia-500 to-fuchsia-400 h-full rounded-full" style="width: 40%"></div>
-            </div>
-          </div>
-
-          <div>
-            <div class="flex justify-between text-sm mb-2.5">
-              <span class="font-medium text-gray-200">Shopping & Tech</span>
-              <span class="font-mono text-slate-400">$185.00</span>
-            </div>
-            <div class="w-full bg-slate-950/50 rounded-full h-3 border border-white/5 overflow-hidden">
-              <div class="bg-linear-to-r from-emerald-500 to-emerald-400 h-full rounded-full" style="width: 25%"></div>
-            </div>
-          </div>
-
-          <div>
-            <div class="flex justify-between text-sm mb-2.5">
-              <span class="font-medium text-gray-200">Entertainment</span>
-              <span class="font-mono text-slate-400">$95.00</span>
-            </div>
-            <div class="w-full bg-slate-950/50 rounded-full h-3 border border-white/5 overflow-hidden">
-              <div class="bg-linear-to-r from-violet-500 to-violet-400 h-full rounded-full" style="width: 15%"></div>
-            </div>
-          </div>
-        </div>
-      </div> -->
-
-      <!-- <UpcomingBills /> -->
 
       <div class="lg:col-span-3">
         {#await data.streamed.transactions}
