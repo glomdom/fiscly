@@ -1,10 +1,17 @@
 <script lang="ts">
-  import { MagnifyingGlassIcon, WalletIcon, ArrowUpRightIcon, ArrowDownRightIcon, PiggyBankIcon, TrendUpIcon } from "phosphor-svelte";
+  import ArrowUpRightIcon from "phosphor-svelte/lib/ArrowUpRightIcon";
+  import ArrowDownRightIcon from "phosphor-svelte/lib/ArrowDownRightIcon";
+  import PiggyBankIcon from "phosphor-svelte/lib/PiggyBankIcon";
+  import TrendUpIcon from "phosphor-svelte/lib/TrendUpIcon";
+  import MetricCard from "$lib/components/MetricCard.svelte";
+  import UpcomingBills from "$lib/components/UpcomingBills.svelte";
+  import RecentTransactions from "$lib/components/RecentTransactions.svelte";
+  import MetricCardSkeleton from "$lib/components/MetricCardSkeleton.svelte";
+  import RecentTransactionsSkeleton from "$lib/components/RecentTransactionsSkeleton.svelte";
 
   let { data } = $props();
 
   let profile = $derived(data.user)!;
-  let searchTerm = $state("");
 </script>
 
 <div class="min-h-screen bg-slate-950 text-gray-50 font-sans selection:bg-fuchsia-500/30">
@@ -21,18 +28,18 @@
         <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Total Liquidity</span>
 
         {#await data.streamed.summary}
-          <div class="flex items-center justify-end gap-3 mt-1 h-10 w-full">
+          <div class="flex items-center justify-end gap-3 h-10 w-full">
             <div class="w-5 h-5 rounded-full border-2 border-fuchsia-500/30 border-t-fuchsia-500 animate-spin"></div>
             <div class="h-9 w-36 bg-slate-800/50 rounded-lg animate-pulse"></div>
           </div>
         {:then summary}
-          <p class="text-4xl font-mono text-gray-50 font-light tracking-tight">
+          <p class="text-4xl font-mono text-gray-50 font-light tracking-tight leading-none h-10 flex items-center">
             ${Math.floor(summary.metrics.totalLiquidity).toLocaleString()}<span class="text-violet-400 text-2xl"
               >.{(summary.metrics.totalLiquidity % 1).toFixed(2).substring(2)}</span
             >
           </p>
         {:catch}
-          <p class="text-red-400 text-xl font-mono mt-2">Error</p>
+          <p class="text-red-400 text-xl font-mono mt-2 h-10 flex items-center">Error</p>
         {/await}
       </div>
     </header>
@@ -40,62 +47,13 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {#await data.streamed.summary}
         {#each Array(4) as _}
-          <div class="bg-slate-900/40 rounded-3xl p-6 border border-white/5 shadow-sm flex flex-col justify-center">
-            <div class="flex items-center gap-2 mb-2">
-              <div class="w-4 h-4 rounded-full border-2 border-slate-600/30 border-t-slate-400 animate-spin"></div>
-              <div class="h-4 w-24 bg-slate-800/80 rounded animate-pulse"></div>
-            </div>
-            <div class="h-8 w-32 bg-slate-800/80 rounded animate-pulse mt-0.5"></div>
-          </div>
+          <MetricCardSkeleton />
         {/each}
       {:then summary}
-        <div
-          class="bg-slate-900/60 rounded-3xl p-6 border border-white/5 shadow-sm flex flex-col justify-center relative overflow-hidden group hover:border-emerald-500/30 transition-colors"
-        >
-          <div class="absolute -right-4 -top-4 w-20 h-20 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-colors"></div>
-          <div class="flex items-center gap-2 mb-2">
-            <ArrowDownRightIcon class="text-emerald-400" size={20} />
-            <p class="text-sm font-medium text-slate-400">Monthly Income</p>
-          </div>
-          <p class="text-2xl font-mono text-gray-200">${summary.metrics.monthlyIncome.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
-        </div>
-
-        <div
-          class="bg-slate-900/60 rounded-3xl p-6 border border-white/5 shadow-sm flex flex-col justify-center relative overflow-hidden group hover:border-red-500/30 transition-colors"
-        >
-          <div class="absolute -right-4 -top-4 w-20 h-20 bg-red-500/10 rounded-full blur-2xl group-hover:bg-red-500/20 transition-colors"></div>
-          <div class="flex items-center gap-2 mb-2">
-            <ArrowUpRightIcon class="text-red-400" size={20} />
-            <p class="text-sm font-medium text-slate-400">Monthly Expenses</p>
-          </div>
-          <p class="text-2xl font-mono text-gray-200">${summary.metrics.monthlyExpenses.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
-        </div>
-
-        <div
-          class="bg-slate-900/60 rounded-3xl p-6 border border-white/5 shadow-sm flex flex-col justify-center relative overflow-hidden group hover:border-indigo-500/30 transition-colors"
-        >
-          <div class="absolute -right-4 -top-4 w-20 h-20 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition-colors"></div>
-          <div class="flex items-center gap-2 mb-2">
-            <PiggyBankIcon class="text-indigo-400" size={20} />
-            <p class="text-sm font-medium text-slate-400">Total Savings</p>
-          </div>
-          <p class="text-2xl font-mono text-gray-200">${summary.metrics.totalSavings.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
-        </div>
-
-        <div
-          class="bg-slate-900/60 rounded-3xl p-6 border border-white/5 shadow-sm flex flex-col justify-center relative overflow-hidden group hover:border-fuchsia-500/30 transition-colors"
-        >
-          <div class="absolute -right-4 -top-4 w-20 h-20 bg-fuchsia-500/10 rounded-full blur-2xl group-hover:bg-fuchsia-500/20 transition-colors"></div>
-          <div class="flex items-center gap-2 mb-2">
-            <TrendUpIcon class="text-fuchsia-400" size={20} />
-            <p class="text-sm font-medium text-slate-400">Investments</p>
-          </div>
-          <p class="text-2xl font-mono text-gray-200">${summary.metrics.investments.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
-        </div>
-      {:catch error}
-        <div class="col-span-1 sm:col-span-2 lg:col-span-4 bg-red-950/30 rounded-3xl p-6 border border-red-500/30 text-center">
-          <p class="text-red-400 font-medium">Unable to load metrics. Please refresh the page.</p>
-        </div>
+        <MetricCard title="Monthly Income" amount={summary.metrics.monthlyIncome} theme="emerald" Icon={ArrowDownRightIcon} />
+        <MetricCard title="Monthly Expenses" amount={summary.metrics.monthlyExpenses} theme="red" Icon={ArrowUpRightIcon} />
+        <MetricCard title="Total Savings" amount={summary.metrics.totalSavings} theme="indigo" Icon={PiggyBankIcon} />
+        <MetricCard title="Investments" amount={summary.metrics.investments} theme="fuchsia" Icon={TrendUpIcon} />
       {/await}
     </div>
 
@@ -146,74 +104,19 @@
         </div>
       </div>
 
-      <div class="bg-linear-to-br from-indigo-600 to-fuchsia-600 rounded-3xl p-6 shadow-xl shadow-indigo-900/20 text-white flex flex-col">
-        <div class="flex items-center gap-2 mb-8 opacity-90">
-          <WalletIcon weight="fill" size={20} />
-          <h3 class="font-bold tracking-wide">Upcoming Bills</h3>
-        </div>
+      <UpcomingBills />
 
-        <div class="space-y-5 grow">
-          <div class="flex justify-between items-center pb-4 border-b border-white/20">
-            <div>
-              <p class="font-semibold text-white">Netflix Premium</p>
-              <p class="text-xs text-white/70 mt-1">Due in 3 days</p>
-            </div>
-            <span class="font-mono font-bold text-lg">$19.99</span>
+      <div class="lg:col-span-3">
+        {#await data.streamed.transactions}
+          <RecentTransactionsSkeleton />
+        {:then transactions}
+          <RecentTransactions transactions={transactions} />
+        {:catch}
+          <div class="bg-red-950/30 rounded-3xl p-6 border border-red-500/30 text-center mt-4">
+            <p class="text-red-400">Failed to load transactions.</p>
           </div>
-          <div class="flex justify-between items-center pb-4 border-b border-white/20">
-            <div>
-              <p class="font-semibold text-white">AWS Hosting</p>
-              <p class="text-xs text-white/70 mt-1">Due in 5 days</p>
-            </div>
-            <span class="font-mono font-bold text-lg">$45.50</span>
-          </div>
-        </div>
-
-        <button class="mt-8 w-full py-4 bg-white/10 hover:bg-white/20 rounded-xl text-sm font-bold tracking-wide transition-all backdrop-blur-sm shadow-inner">
-          View All Subscriptions
-        </button>
+        {/await}
       </div>
-
-      <section class="lg:col-span-3 bg-slate-900/60 rounded-3xl border border-white/5 overflow-hidden shadow-sm mt-4">
-        <div class="p-6 border-b border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-950/30">
-          <h3 class="text-lg font-bold">Recent Transactions</h3>
-
-          <div class="relative w-full sm:max-w-xs text-slate-300">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 opacity-50">
-              <MagnifyingGlassIcon size={18} />
-            </span>
-            <input
-              bind:value={searchTerm}
-              placeholder="Search history..."
-              class="w-full bg-slate-950 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-sm focus:ring-2 focus:ring-fuchsia-500 focus:border-transparent transition-all outline-none placeholder:text-slate-600"
-            />
-          </div>
-        </div>
-
-        <div class="overflow-x-auto min-h-50">
-          <table class="w-full text-left whitespace-nowrap">
-            <thead class="bg-slate-950/80 text-slate-400 text-xs uppercase tracking-widest font-semibold border-b border-white/5">
-              <tr>
-                <th class="px-6 py-5">Merchant</th>
-                <th class="px-6 py-5">Category</th>
-                <th class="px-6 py-5">Date</th>
-                <th class="px-6 py-5 text-right">Amount</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-white/5">
-              <tr>
-                <td colspan="4" class="px-6 py-16 text-center">
-                  <div class="flex flex-col items-center justify-center opacity-50">
-                    <WalletIcon size={48} weight="duotone" class="mb-4 text-slate-500" />
-                    <p class="text-slate-400 font-medium">No recent transactions to display.</p>
-                    <p class="text-slate-500 text-sm mt-1">Your activity will appear here.</p>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
     </div>
   </main>
 </div>

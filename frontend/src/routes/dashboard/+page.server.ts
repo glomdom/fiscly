@@ -1,20 +1,8 @@
-export const load = async ({ locals, fetch, cookies }) => {
-  const token = cookies.get("auth_token");
+import type { PageServerLoad } from './$types';
 
-  const fetchMetrics = async () => {
-    const res = await fetch("http://localhost:5096/api/dashboard/aggregate", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (!res.ok) throw new Error("Failed to load metrics");
-
-    return await res.json();
-  };
-
+export const load: PageServerLoad = async ({ locals, cookies }) => {
   return {
     user: locals.user,
-    streamed: {
-      summary: fetchMetrics(),
-    },
+    token: cookies.get("auth_token")
   };
 };

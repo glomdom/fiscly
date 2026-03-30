@@ -8,13 +8,13 @@ export const handle = async ({ event, resolve }) => {
       throw redirect(303, "/login");
     }
 
-    const res = await event.fetch("http://localhost:5096/api/auth/me", {
+    const res = await fetch("http://127.0.0.1:5096/api/auth/me", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
     if (!res.ok) {
       event.cookies.delete("auth_token", { path: "/" });
-      
+
       throw redirect(303, "/login");
     }
 
