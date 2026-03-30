@@ -1,6 +1,7 @@
 <script lang="ts">
   import { cubicOut } from "svelte/easing";
   import { Tween } from "svelte/motion";
+  import ChartPieSliceIcon from "phosphor-svelte/lib/ChartPieSliceIcon";
 
   interface CategorySummary {
     category: string;
@@ -69,30 +70,37 @@
   </h3>
 
   <div class="space-y-6 grow flex flex-col justify-center">
-    {#each displayData as item, i}
-      {@const animatedValue = item.tween.current}
-
-      {@const percentage = grandTotal > 0 ? (animatedValue / grandTotal) * 100 : 0}
-      {@const color = colors[i % colors.length]}
-
-      <div>
-        <div class="flex justify-between text-sm mb-2.5">
-          <span class="font-medium text-gray-200">{item.category}</span>
-          <span class="font-mono text-slate-400 tabular-nums">
-            {formatCurrency(animatedValue)}
-          </span>
-        </div>
-
-        <div class="w-full bg-slate-950/50 rounded-full h-3 border border-white/5 relative">
-          <div
-            class="bg-linear-to-r {color.bg} h-full rounded-full relative"
-            style="
-              width: {percentage}%; 
-              box-shadow: {animatedValue > 0 ? `0 0 15px rgba(${color.rgb}, 0.4)` : 'none'};
-            "
-          ></div>
-        </div>
+    {#if displayData.length === 0}
+      <div class="flex flex-col items-center justify-center opacity-50 py-8">
+        <ChartPieSliceIcon size={48} weight="duotone" class="mb-4 text-slate-500" />
+        <p class="text-slate-400 font-medium">No spending data for this period.</p>
       </div>
-    {/each}
+    {:else}
+      {#each displayData as item, i}
+        {@const animatedValue = item.tween.current}
+
+        {@const percentage = grandTotal > 0 ? (animatedValue / grandTotal) * 100 : 0}
+        {@const color = colors[i % colors.length]}
+
+        <div>
+          <div class="flex justify-between text-sm mb-2.5">
+            <span class="font-medium text-gray-200">{item.category}</span>
+            <span class="font-mono text-slate-400 tabular-nums">
+              {formatCurrency(animatedValue)}
+            </span>
+          </div>
+
+          <div class="w-full bg-slate-950/50 rounded-full h-3 border border-white/5 relative">
+            <div
+              class="bg-linear-to-r {color.bg} h-full rounded-full relative"
+              style="
+                width: {percentage}%; 
+                box-shadow: {animatedValue > 0 ? `0 0 15px rgba(${color.rgb}, 0.4)` : 'none'};
+              "
+            ></div>
+          </div>
+        </div>
+      {/each}
+    {/if}
   </div>
 </div>
