@@ -18,7 +18,9 @@ export const load = async ({ fetch, data }) => {
 
     if (!res.ok) throw new Error("Failed to load transactions");
 
-    return await res.json();
+    const response = await res.json();
+
+    return response.transactions;
   };
 
   return {
