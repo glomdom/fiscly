@@ -18,7 +18,7 @@ public class DashboardController : ControllerBase {
 
     [HttpGet("aggregate")]
     [Authorize]
-    public async Task<ActionResult<FinancialReportDto>> Aggregate() {
+    public async Task<ActionResult<FinancialMetricsResponseDto>> Aggregate() {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var user = await _db.Users.FirstOrDefaultAsync(x => x.Id == userId);
         if (user is null) {
@@ -54,6 +54,6 @@ public class DashboardController : ControllerBase {
         var totalSavings = stats?.TotalSaving ?? 0;
         var totalInvestments = Math.Abs(stats?.TotalInvestments ?? 0);
 
-        return Ok(new FinancialReportDto(new FinancialMetricsDto(totalLiquidity, monthlyIncome, monthlyExpenses, totalSavings, totalInvestments)));
+        return Ok(new FinancialMetricsResponseDto(new FinancialMetricsDto(totalLiquidity, monthlyIncome, monthlyExpenses, totalSavings, totalInvestments)));
     }
 }

@@ -71,7 +71,7 @@
       {#await data.streamed.breakdown}
         <SpendingBreakdownSkeleton />
       {:then breakdown}
-        <SpendingBreakdown />
+        <SpendingBreakdown monthlyBreakdowns={breakdown}/>
       {:catch}
         <div class="bg-red-950/30 rounded-3xl p-6 border border-red-500/30 text-center mt-4">
           <p class="text-red-400">Failed to load transactions.</p>

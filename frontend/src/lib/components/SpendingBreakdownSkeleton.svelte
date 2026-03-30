@@ -4,9 +4,9 @@
   <div class="space-y-6 grow flex flex-col justify-center">
     {#each Array(4) as _}
       <div>
-        <div class="flex justify-between text-sm mb-3">
-          <div class="h-4 bg-white/10 rounded-md w-1/8 animate-pulse"></div>
-          <div class="h-4 bg-white/10 rounded-md w-18 animate-pulse"></div>
+        <div class="flex justify-between text-sm mb-2.5">
+          <div class="h-3 bg-white/10 rounded-md w-1/8 animate-pulse"></div>
+          <div class="h-3 bg-white/10 rounded-md w-18 animate-pulse"></div>
         </div>
         <div class="h-3 w-full bg-white/10 rounded-md animate-pulse"></div>
         <!-- <div class="w-full bg-slate-950/50 rounded-full h-3 border border-white/5 overflow-hidden">

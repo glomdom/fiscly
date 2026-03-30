@@ -32,7 +32,7 @@ export const load = async ({ fetch, data }) => {
 
     const response = await res.json();
 
-    return response;
+    return response.monthlyBreakdowns;
   };
 
   return {

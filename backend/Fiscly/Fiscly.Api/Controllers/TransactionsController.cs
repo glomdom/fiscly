@@ -18,7 +18,7 @@ public class TransactionsController : ControllerBase {
 
     [HttpGet]
     [Authorize]
-    public async Task<ActionResult<FinancialReportDto>> GetAll() {
+    public async Task<ActionResult<FinancialMetricsResponseDto>> GetAll() {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var user = await _db.Users.FirstOrDefaultAsync(x => x.Id == userId);
         if (user is null) {
@@ -42,25 +42,39 @@ public class TransactionsController : ControllerBase {
 
     [HttpGet("breakdown")]
     [Authorize]
-    public async Task<ActionResult<FinancialReportDto>> Breakdown() {
+    public async Task<ActionResult<FinancialBreakdownResponseDto>> Breakdown() {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        var user = await _db.Users.FirstOrDefaultAsync(x => x.Id == userId);
-        if (user is null) {
+        if (!await _db.Users.AnyAsync(x => x.Id == userId)) {
             return BadRequest(new ProblemDetails {
                 Detail = "User was not found.",
                 Status = StatusCodes.Status400BadRequest,
             });
         }
 
-        var transactions = await _db.Transactions
+        var flatData = await _db.Transactions
             .AsNoTracking()
-            .Where(x => x.UserId == user.Id)
-            .OrderByDescending(x => x.Date)
-            .Select(x => new TransactionDto(x.Merchant, x.Category, x.Amount, x.Date))
+            .Where(x => x.UserId == userId)
+            .GroupBy(x => new { x.Date.Year, x.Date.Month, x.Category })
+            .Select(g => new {
+                g.Key.Year,
+                g.Key.Month,
+                g.Key.Category,
+                Total = g.Sum(t => t.Amount)
+            })
             .ToListAsync();
 
-        return Ok(
-            new TransactionsResponseDto(transactions)
-        );
+        var monthlyBreakdowns = flatData
+            .GroupBy(x => new { x.Year, x.Month })
+            .Select(monthGroup => new MonthlyBreakdownDto(
+                monthGroup.Key.Year,
+                monthGroup.Key.Month,
+                monthGroup.Select(c => new CategorySummaryDto(c.Category, c.Total)).ToList(),
+                monthGroup.Sum(c => c.Total)
+            ))
+            .OrderByDescending(x => x.Year)
+            .ThenByDescending(x => x.Month)
+            .ToList();
+
+        return Ok(new FinancialBreakdownResponseDto(monthlyBreakdowns));
     }
 }

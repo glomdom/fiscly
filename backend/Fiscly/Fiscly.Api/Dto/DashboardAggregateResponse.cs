@@ -1,6 +1,6 @@
 ﻿namespace Fiscly.Api.Dto;
 
-public sealed record FinancialReportDto(
+public sealed record FinancialMetricsResponseDto(
     FinancialMetricsDto Metrics
 );
 
